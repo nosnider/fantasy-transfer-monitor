@@ -79,7 +79,6 @@ def main(request) -> str:
     extract_timestamp_utc = datetime.now(pytz.utc).strftime("%Y-%m-%d_%H:%M:%S_%Z")
     extrct_date_utc = datetime.now(pytz.utc).strftime("%Y-%m-%d")
 
-
     resp = request_api_data()
 
     for table in resp.keys():
