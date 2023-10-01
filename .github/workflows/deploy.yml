@@ -32,5 +32,5 @@ jobs:
         --region=us-east1 \
         --runtime=python38 \
         --entry-point=main \
-        --memory=256Mi \
+        --memory=128Mi \
         --trigger-http
