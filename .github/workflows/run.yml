@@ -19,4 +19,4 @@ jobs:
       uses: 'google-github-actions/setup-gcloud@v1'
     
     - name: 'Invoke Cloud Function'
-      run: gcloud functions call func2 --data '{"name":"Keyboard Cat"}'
+      run: gcloud functions call func2 --data '{}' --region=us-east1
