@@ -1,0 +1,6 @@
+name: Deploy Cloud Function
+
+on:
+  push:
+    branches:
+      - main  # Adjust the branch as needed
