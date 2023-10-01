@@ -12,7 +12,10 @@ jobs:
     steps:
     - name: Checkout code
       uses: actions/checkout@v2
-
-    - name: Testing bash scripts
+    
+    = name: Deploy Cloud Function
       run: |
-        zip -r src.zip requirements.txt extract.py
+        gcloud functions deploy func-2 \
+          --gen2 \ 
+          --runtime python38 \
+          --entry-point main \

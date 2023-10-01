@@ -89,5 +89,3 @@ def main(request) -> str:
         upload_json_to_gcs(json_object=json_object, bucket_name = bucket_name, object_name = object_name)
 
     return '200'
-
-main('')
