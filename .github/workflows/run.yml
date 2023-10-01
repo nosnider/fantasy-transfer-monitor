@@ -2,7 +2,7 @@ name: Invoke Cloud Function
 
 on:
   schedule:
-    - cron: '*/5 * * * *'
+    - cron: '0 * * * *'
 
 jobs:
   invoke:

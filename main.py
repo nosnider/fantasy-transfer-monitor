@@ -71,11 +71,11 @@ def main(request) -> str:
     request: flask request
     returns: (str): valid flask status code
     '''
-    
+
 
     logging.info(f'received {request}.')
 
-    bucket_name = 'transfer-data-2934872'
+    bucket_name = 'transfer-data-raw'
     extract_timestamp_utc = datetime.now(pytz.utc).strftime("%Y-%m-%d_%H:%M:%S_%Z")
     extrct_date_utc = datetime.now(pytz.utc).strftime("%Y-%m-%d")
 
