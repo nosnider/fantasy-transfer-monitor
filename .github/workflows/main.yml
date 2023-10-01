@@ -3,7 +3,7 @@ name: Deploy Cloud Function
 on:
   push:
     branches:
-      - main  # Adjust the branch as needed
+      - main
 
 jobs:
   deploy:
@@ -12,10 +12,20 @@ jobs:
     steps:
     - name: Checkout code
       uses: actions/checkout@v2
+
+    - name: Set up Google Cloud SDK
+      uses: google-github-actions/setup-gcloud@master
+      with:
+        service_account_key: ${{ secrets.GCP_SA_KEY }}
+        project_id: fantasy-transfer-monitor 
+        export_default_credentials: true
     
     = name: Deploy Cloud Function
       run: |
-        gcloud functions deploy func-2 \
-          --gen2 \ 
-          --runtime python38 \
-          --entry-point main \
+        gcloud functions deploy func2 \
+        --gen2 \
+        --region=us-east1 \
+        --runtime=python38 \
+        --entry-point=main \
+        --memory=128Mi \
+        --trigger-http
