@@ -19,8 +19,8 @@ jobs:
         service_account_key: ${{ secrets.GCP_SA_KEY }}
         project_id: fantasy-transfer-monitor 
         export_default_credentials: true
-    
-    = name: Deploy Cloud Function
+
+    - name: Deploy Cloud Function
       run: |
         gcloud functions deploy func2 \
         --gen2 \
