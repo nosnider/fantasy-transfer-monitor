@@ -4,6 +4,7 @@ from google.cloud import storage
 from datetime import datetime
 import pytz
 import functions_framework
+import logging
 
 def request_api_data() -> dict:
 
@@ -23,7 +24,7 @@ def request_api_data() -> dict:
     response = requests.request("GET", url)
 
     if response.ok:
-        print(f'response to {url} suceeded.')
+        logging.info(f'response to {url} suceeded.')
         response_text = response.text
     
     else:
@@ -52,7 +53,7 @@ def upload_json_to_gcs(json_object, bucket_name, object_name):
     blob = bucket.blob(object_name)
 
     blob.upload_from_string(json_string, content_type='application/json')
-    print(f'uploaded {blob.name}')
+    logging.info(f'uploaded {blob.name}')
 
     return blob.name
 
@@ -69,18 +70,24 @@ def main(request) -> str:
     Args:
     request: flask request
     returns: (str): valid flask status code
-    
     '''
 
-    print(f'received {request}.')
+    logging.info(f'received {request}.')
 
     bucket_name = 'transfer-data-2934872'
     extract_timestamp_utc = datetime.now(pytz.utc).strftime("%Y-%m-%d_%H:%M:%S_%Z")
     extrct_date_utc = datetime.now(pytz.utc).strftime("%Y-%m-%d")
-    object_name = f'{extrct_date_utc}/raw_response_{extract_timestamp_utc}.json'
 
 
     resp = request_api_data()
-    upload_json_to_gcs(resp, bucket_name = bucket_name, object_name = object_name)
+
+    for table in resp.keys():
+        
+        object_name = f'{table}/{extrct_date_utc}/{table}_raw_{extract_timestamp_utc}.json'
+        json_object = resp.get(table)
+
+        upload_json_to_gcs(json_object=json_object, bucket_name = bucket_name, object_name = object_name)
 
     return '200'
+
+main('')
