@@ -71,6 +71,7 @@ def main(request) -> str:
     request: flask request
     returns: (str): valid flask status code
     '''
+    
 
     logging.info(f'received {request}.')
 
