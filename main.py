@@ -34,7 +34,7 @@ def request_api_data() -> dict:
 
 
 
-def upload_json_to_gcs(json_object, bucket_name, object_name):
+def upload_json_to_gcs(client, bucket_name, object_name, json_object):
     """
     Uploads a JSON object to Google Cloud Storage.
 
@@ -46,13 +46,19 @@ def upload_json_to_gcs(json_object, bucket_name, object_name):
     Returns:
     str: The GCS URL of the uploaded JSON object.
     """
-    json_string = json.dumps(json_object)
-    client = storage.Client()
 
     bucket = client.bucket(bucket_name)
     blob = bucket.blob(object_name)
+    timestamp = datetime.now()
 
-    blob.upload_from_string(json_string, content_type='application/json')
+    with blob.open("w") as f:
+        for row in json_object:
+            row["timestamp"] = timestamp
+            payload = json.dumps(row, default=str)
+            f.write(payload)
+            f.write("\n")
+
+    # blob.upload_from_string(json_string, content_type='application/json')
     logging.info(f'uploaded {blob.name}')
 
     return blob.name
@@ -75,6 +81,10 @@ def main(request) -> str:
 
     logging.info(f'received {request}.')
 
+    client = storage.Client()
+
+    logging.info(f'client created for {client.project}')
+
     bucket_name = 'transfer-data-raw'
     extract_timestamp_utc = datetime.now(pytz.utc).strftime("%Y-%m-%d_%H:%M:%S_%Z")
     extrct_date_utc = datetime.now(pytz.utc).strftime("%Y-%m-%d")
@@ -82,10 +92,14 @@ def main(request) -> str:
     resp = request_api_data()
 
     for table in resp.keys():
-        
-        object_name = f'{table}/{extrct_date_utc}/{table}_raw_{extract_timestamp_utc}.json'
-        json_object = resp.get(table)
 
-        upload_json_to_gcs(json_object=json_object, bucket_name = bucket_name, object_name = object_name)
+        # total players is just an integer value, not something we want to upload
+        if table not in  ('total_players','game_settings'):
+            
+            print(f'uploading {table}')
+            object_name = f'{table}/{extrct_date_utc}/{table}_raw_{extract_timestamp_utc}.json'
+            json_object = resp.get(table)
+
+            upload_json_to_gcs(client=client,json_object=json_object, bucket_name = bucket_name, object_name = object_name)
 
     return '200'
