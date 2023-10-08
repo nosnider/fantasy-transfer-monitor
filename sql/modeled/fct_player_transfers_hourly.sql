@@ -27,12 +27,13 @@ create or replace table fantasy-transfer-monitor.analytics.fct_player_transfers_
     )
 
     select
+        -- keys
         player_transfers_hourly.id,
         player_transfers_hourly.fk_player_id,
         dim_gameweeks.fk_gameweek_id,
         player_transfers_hourly.timestamp,
 
-        -- audit
+        -- metrics
         player_transfers_hourly.transfers_in, 
         player_transfers_hourly.transfers_in_event, 
         player_transfers_hourly.transfers_out, 
